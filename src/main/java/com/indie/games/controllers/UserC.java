@@ -1,5 +1,10 @@
 package com.indie.games.controllers;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -10,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.indie.games.model.User;
 import com.indie.games.services.UserService;
@@ -83,18 +89,52 @@ public class UserC {
         return "redirect:/";
     }
 
-    @GetMapping("/home")
-    public String homePage(Model model, HttpSession session){
-        // condicion para retornar index en caso de cierre de sesion
-        if ((Long) (session.getAttribute("userId")) == null) {
+    @GetMapping("/account/profile")
+    public String profile(@ModelAttribute("user")User user, Model model, HttpSession session){
+        Long uId = (Long) session.getAttribute("userId");
+        if(uId == null){
 			System.out.println("fallo la sesion");
-            // model.addAttribute("errorSesion", "El tiempo de la sesión a expirado");
-			return "redirect:/";
-		}
-        Long uid = (Long) session.getAttribute("userId");
-        User u = userServ.findById(uid);
+            return "redirect:/";
+        }
+        User u = userServ.findById(uId);
         model.addAttribute("user", u);
-        return "home";
+        return "profile";
+    }
+
+    @PostMapping("/account/profile/photo")
+    public String photo(@ModelAttribute("user")User user, Model model, @RequestParam("photoProfile")MultipartFile photoProFile, HttpSession session){
+        Long userId = (Long) session.getAttribute("userId");
+        if(userId != null){
+            User u = userServ.findById(userId);
+            if(u != null){
+                if(photoProFile.isEmpty() == false){
+                    String fileName = "fotitoperfil";
+                    String imgRoute = "/image/" + userId;
+                    File directory = new File("src/main/resources/static" + imgRoute);
+                    if(directory.exists() == false){
+                        directory.mkdirs();
+                    }
+                    try {
+                        byte[] bytes = photoProFile.getBytes();
+                        BufferedOutputStream outputStream = new BufferedOutputStream(
+                            new FileOutputStream(
+                                new File(directory.getAbsolutePath() + "/" + fileName)
+                            )
+                        );
+                        outputStream.write(bytes);
+                        outputStream.flush();
+                        outputStream.close();
+                        System.out.println("El archivo se ha cargado con exito");
+                        u.setImgRoute(imgRoute + "/" + fileName);
+                        userServ.save(u);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        System.out.println("ocurrio un error al cargar la imagen." + e);
+                    }
+                }
+            }
+        }
+        return "redirect:/account/profile";
     }
     
 }
