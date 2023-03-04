@@ -17,7 +17,7 @@
                 <input type="file" name="photoProfile" id="inputGroupFile02"/>
                 <button for="inputGroupFile02">add image</button>
             </form>
-            <a href="javascript:close()">close</a>
+            <a href="javascript:close()">Cerrar</a>
         </div>
         <button type="button" class="img" id="open-modal" onclick="openWindow()"><img class="img" src="${user.imgRoute}" alt="${users.imgRoute}"></button>
         

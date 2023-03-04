@@ -99,7 +99,7 @@
                                         <li><a class="text-decoration-none" href="#">Hack Slash</a></li>
                                         <li><a class="text-decoration-none" href="#">Puzzle</a></li>
                                         <li><a class="text-decoration-none" href="#">MMO</a></li>
-                                        <li><a class="text-decoration-none" href="#">Arcade</a></li>
+                                        <li><a class="text-decoration-none" href="/arcade">Arcade</a></li>
                                         <li><a class="text-decoration-none" href="#">Figthing</a></li>
                                         <li><a class="text-decoration-none" href="#">Platform</a></li>
                                         <li><a class="text-decoration-none" href="#">Virtual Reality</a></li>
